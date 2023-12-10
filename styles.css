@@ -1,0 +1,284 @@
+
+@font-face {
+    font-family: 'Cinzel';
+    src: url("fonts/cinzel.regular.ttf") format("truetype");
+    font-style: normal;
+}
+
+body {
+    margin: 40px;
+    font-family: Libre Baskerville;
+    background: #fcfaf4;
+
+}
+
+
+header h1 {
+    font-size: 50px;
+    text-align: center;
+    font-family: Cinzel;
+
+    margin: 0;
+
+}
+
+header h4 {
+    margin: 0;
+    font-style: italic;
+
+    text-align: center;
+}
+
+
+#title {
+    border-top: 1px solid lightgrey;
+    border-bottom: 1px solid lightgrey;
+    padding: 20px;
+    width: 80%;
+    margin: auto;
+}
+
+
+.topic_bar {
+    height: 40px;
+    width: 100%;
+    display: inline-block;
+    background: #6a4285;
+    margin: 30px 0 30px 0;
+}
+
+
+.spacer_bar {
+    height: 40px;
+    width: 100%;
+    display: inline-block;
+    background: #555555;
+    margin: 30px 0 30px 0;
+}
+
+.spacer_topic {
+    height: 35px;
+    display: inline-block;
+    background: #6a4285;
+    padding: 5px 40px 0 40px;
+    font-size: 25px;
+    border-right: 20px solid white;
+    color: white;
+    font-family: sans-serif;
+    font-weight: bold;
+    font-family: Cinzel;
+    letter-spacing: 5px;
+}
+
+
+.heading {
+    display: inline-block;
+    font-family: sans-serif;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    padding: 5px 0 0 15px;
+    font-family: Cinzel;
+}
+
+.author {
+    float: right;
+    margin-right: 20px;
+    color: #6a4285;
+    font-family: Bebas Neue;
+}
+
+.content-2-column {
+    column-count: 2;
+    column-gap: 30px;
+}
+
+.content-3-column {
+    column-count: 3;
+    column-gap: 30px;
+}
+
+.content-4-column {
+    column-count: 4;
+    column-gap: 30px;
+}
+
+.right_border {
+    padding-right: 30px;
+    border-right: 1px solid lightgrey;
+}
+
+
+#profile_pic {
+    display: block;
+    /*top: 10px;*/
+    height: 80px;
+    /*float: left;*/
+    /*margin: 3px 12px 3px 0px;*/
+    margin: auto;
+    border-radius: 50%;
+    shape-outside: circle();
+    /*filter: grayscale(1);*/
+    border: 5px solid white;
+}
+
+#quote {
+    float: right;
+    /*width: 800px*/
+    font-size: 30px;
+    color: #6a4285;
+    font-weight: bold;
+    font-family: sans-serif;
+    margin: 20px;
+    background: white;
+    font-family: Bebas Neue;
+}
+
+
+
+#about {
+    padding: 20px;
+    /*min-height: 750px;*/
+    display: inline-block;
+    max-width: 45%;
+    vertical-align: top;
+}
+/* SOMETHING LIKE THIS - https://css-tricks.com/float-center/ */
+
+
+#latest {
+    display: inline-block;
+    width: 50%;
+    vertical-align: top;
+
+}
+
+.x_window {
+    white-space: nowrap;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    width: 90%;
+    margin: auto;
+}
+
+.preview {
+    display: inline-block;
+    width: 400px;
+    height: 630px;
+    margin: 10px;
+    white-space: normal;
+    vertical-align: top;
+    cursor: pointer;
+}
+
+.preview:hover {
+    box-shadow: 3px 3px 5px 6px #ccc;
+}
+
+.preview img {
+    width: 100%;
+}
+
+.preview h4 {
+    font-family: Bebas Neue;
+    font-size: 25px;
+    margin: 5px 0 0px 0;
+}
+
+.preview_text{
+    padding: 10px;
+}
+
+.quote {
+    font-style: italic;
+    text-align: center;
+    font-size: 25px;
+}
+
+.quote_attr {
+    font-style: normal;
+    margin: 5px;
+    font-size: 14px;
+}
+
+.quote_border {
+    height: 15px;
+    display: block;
+    border-top: 2px solid black;
+    width: 60%;
+    margin: 10px auto 10px auto;
+}
+
+.bottom_border {
+    height:2px;
+    display: block;
+    border-top: 1px solid lightgray;
+    width: 60%;
+    margin: 20px auto 20px auto;
+}
+
+/* CONTENT*/
+
+.first_para::first-letter {
+    font-size: 250%;
+    color: #000000;
+    float: left;
+    padding: 4px;
+}
+
+
+
+/* DEFINTIIONS*/
+
+.def {
+    text-decoration: underline dashed black;
+    text-underline-position: under;
+    color: black;
+    text-underline-offset: -3px;
+}
+
+.def_item {
+    padding: 20px;
+}
+
+.def_word {
+    font-weight: bold;
+}
+
+.definition {
+    margin-left: 15px;
+}
+
+.def_item li {
+    font-size: 12px;
+}
+
+.footnote {
+    font-size: 12px;
+}
+
+
+.article {
+    width: 80%;
+    margin: auto;
+}
+
+
+.link {
+    color: #6a4285;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    font-style: italic;
+}
+
+.link:hover {
+    text-decoration: underline;
+}
+
+
+.reference {
+    width: 70%;
+}
+
+

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+		<head>
+				<meta charset="UTF-8">
+				<title>Vita Declaratio | Definitions</title>
+
+				<link rel="preconnect" href="https://fonts.googleapis.com">
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+				<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+				<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+				<link href="styles.css" type="text/css" rel="stylesheet">
+
+
+
+		</head>
+		<body>
+
+				<header>
+
+						<div id="title">
+								<h1>Vita Declaratio</h1>
+								<h4>Perspectives throughout my journey</h4>
+						</div>
+
+				</header>
+
+				<section id="arrival"></section>
+
+				<br>
+				<br>
+
+				<section class="article">
+
+
+						<div>
+
+
+								<h1 style="font-family: Bebas Neue;">Definitions</h1>
+
+								<p>
+								Definitions are inherently authoritarian. The common interpretation is that the meaning
+								of words, that is to say, what people <i>mean</i> when they use words, is the same and forever unchanging.
+								But you only have to use language to find out that is not the case. There is no authority
+								we can turn to on what words mean, just as is there is no authority on whether British, American, Indian
+								or New Zealand English is the <i>correct</i> English. They are forever changing, underpinned
+								by what people mean. And meaning is not explicit, and so whenever we find ourselves
+								confused by the way people use words, we ask them to <i>explain</i> themselves. The only <i>objective
+										truth</i> to the matter is the <i>intended</i> meaning. Whether that can be faithfully reproduced using
+								words or letters, or even successfully understood by the listener/reader makes understanding
+								other people inherently difficult. And so if we value truth, we must be patient and diligent in trying to
+								make communication easier. To aid that effort, below is my list of *definitions of words
+								I use which may differ to common use, or I feel should be clarified where I anticipate confusion.
+
+								</p>
+
+								<p style="font-size: 12px;">*DISCLAIMER: The following definitions are subject to revision. A change log
+								will be included as needed.</p>
+
+								<span class="bottom_border"></span>
+
+						</div>
+
+						<!--  DEFINITIONS BEGIN     -->
+						<div id="definitions">
+
+
+								<div class="def_item" id="w_humanism">
+										<span class="def_word">Humanism:</span>
+										<span class="definition">
+												A world-view posits that the problems, concerns, interests and aspirations of humans have
+												inherent value and importance. Thus in navigating our journey through life, solutions to our personal
+												moral problems necessarily accommodate the existence and values of other humans. Humans belong
+												to a family of conscious beings that more generally we refer to as "people", which includes Extra
+												Terrestials (if they exist) and Artificial General Intelligence (if and when it is created).
+												By possessing personhood, humans are cosmically significant.
+										</span>
+								</div>
+
+								<div class="def_item" id="w_science">
+										<span class="def_word">Science:</span>
+										<span class="definition">
+												A framework of ideas by which people come to understand physical reality. It encompasses
+												the modes of criticism utilised by rationality, with the added criterion that physical evidence
+												can be used to refute, or tentatively corroborate hypotheses. Thus the difference between scientific
+												hypotheses and all other hypotheses is that they are guesses about physical reality, and so can be
+												demonstrably refuted by physical reality. In contrast, mathematical hypotheses need not, and indeed
+												may not correspond to physical reality.
+										</span>
+								</div>
+
+								<div class="def_item" id="w_fallibilsm">
+										<span class="def_word">Fallibilism:</span>
+										<span class="definition">
+												The proposition that knowledge is obtainable through conjectures and criticism, but certainty is
+												not. Consequently, no knowledge, and no ideas in general, are above criticism. This implies that
+												progress is possible due to the existence of error. We can be less wrong but we can also be mistaken.
+										</span>
+								</div>
+
+								<div class="def_item" id="w_person">
+										<span class="def_word">Person / People:</span>
+										<span class="definition">
+												The species of being which possesses the knowledge to create more knowledge, and importantly
+												explanatory knowledge. This has two consequences: (1) knowledge creation is unbounded except where physically
+												impossible (e.g. time constraints), (2) in order to successfully explain the universe (the task of science) we
+												need to include phenomena which create knowledge. Thus people are cosmically significant in the
+												totality of understanding.
+										</span>
+								</div>
+
+								<div class="def_item" id="w_optimism">
+										<span class="def_word">Optimism:</span>
+										<span class="definition">
+												The position that recognises that "<i>problems are inevitable</i>"<sup>[1]</sup> but that problems are
+												soluble given the right knowledge. In other words, "<i>All evils are the result of insufficient knowledge</i>"<sup>[1]</sup>.
+												For example, the tragedy of infant
+												mortality has been largely overcome with the right knowledge. Moreover, not only
+												does such knowledge exist, but that it is attainable through knowledge creation. Since we know
+												how to create knowledge (via conjecture and criticism) we can create the right knowledge, if no physical
+												limitations exist (e.g. time constraints). We therefore have reason to be optimistic in overcoming
+												our problems in the long run.
+										</span><br>
+										<ol>
+												<li>David Deutsch (2011) - <i>The Beginning of Infinity</i></li>
+										</ol>
+								</div>
+
+
+						</div>
+
+
+				</section>
+
+
+				<script>
+
+
+						function sortedDefinitions() {
+								// get parent
+								let parent = document.getElementById("definitions");
+								//get items
+								let items = document.getElementsByClassName("def_item");
+								let toSort = Array.prototype.slice.call(items, 0);
+
+								// Sort items
+								toSort.sort(function(a, b) {
+										let aord = a.id.split('w_')[1].toUpperCase();
+										let bord = b.id.split('w_')[1].toUpperCase();
+										if (aord < bord) {
+												return -1; //nameA comes first
+										}
+										if (aord > bord) {
+												return 1; // nameB comes first
+										}
+										return 0;  // names must be equal
+								});
+
+								// add back to document
+								parent.innerHTML = "";
+								for(let i = 0, l = toSort.length; i < l; i++) {
+										parent.appendChild(toSort[i]);
+								}
+
+						}
+
+/* Sorts the definitions alphabetically */
+window.onload = function() {
+
+		sortedDefinitions();
+}
+
+				</script>
+
+
+		</body>
+</html>

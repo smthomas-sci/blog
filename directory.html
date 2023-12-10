@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Vita Declaratio | Directory</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+    <link href="styles.css" type="text/css" rel="stylesheet">
+
+
+
+</head>
+<body>
+
+    <header>
+
+        <div id="title">
+            <h1>Vita Declaratio</h1>
+            <h4>Perspectives throughout my journey</h4>
+        </div>
+
+    </header>
+
+    <section id="arrival"></section>
+
+    <br>
+    <br>
+
+    <section class="article">
+
+
+        <div>
+
+            <h1 style="font-family: Bebas Neue; font-size: 40px;">Directory</h1>
+
+            <p>
+                This is a directory which provides access to all pages of the website.
+            </p>
+
+
+            <span class="bottom_border"></span>
+
+        </div>
+
+        <!--  ARTICLES       -->
+        <div>
+            <div class="topic_bar">
+                <span class="heading">ARTICLES</span>
+            </div>
+            <ul>
+                <li>20-11-2021 - <a><i>Encontrando Su Voz</i></a> &nbsp;&nbsp;&nbsp;&nbsp; 300 words &nbsp;&nbsp;&nbsp;&nbsp; 4 mins</li>
+                <li>21-11-2021 - <a href="http://marcgg.com/blog/2016/11/01/javascript-audio/">
+                                        <i>Mathematics of Sound</i></a> | 300 words | 30mins</li>
+            </ul>
+        </div>
+
+
+        <!--  BOOK REVIEWS -->
+        <div>
+            <div class="topic_bar">
+                <span class="heading">BOOK REVIEWS</span>
+            </div>
+            <ul>
+<!--                <li>20-11-20201 - <a>Encontrando Su Voz</a> | 300 words | 4 mins</li>-->
+            </ul>
+        </div>
+
+
+    </section>
+
+
+    <script>
+
+
+        function sortedDefinitions() {
+            // get parent
+            let parent = document.getElementById("definitions");
+            //get items
+            let items = document.getElementsByClassName("def_item");
+            let toSort = Array.prototype.slice.call(items, 0);
+
+            // Sort items
+            toSort.sort(function(a, b) {
+                let aord = a.id.split('w_')[1].toUpperCase();
+                let bord = b.id.split('w_')[1].toUpperCase();
+                if (aord < bord) {
+                    return -1; //nameA comes first
+                }
+                if (aord > bord) {
+                    return 1; // nameB comes first
+                }
+                return 0;  // names must be equal
+            });
+
+            // add back to document
+            parent.innerHTML = "";
+            for(let i = 0, l = toSort.length; i < l; i++) {
+                parent.appendChild(toSort[i]);
+            }
+
+        }
+
+        /* Sorts the definitions alphabetically */
+        window.onload = function() {
+
+                sortedDefinitions();
+        }
+
+    </script>
+
+
+</body>
+</html>
