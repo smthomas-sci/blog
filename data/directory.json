@@ -1,0 +1,42 @@
+{
+  "data": {
+
+    "latest": [
+      {"type": "articles", "id" : "0"}
+    ],
+
+    "articles": {
+      "ids": [ 0, 1],
+      "0": {
+        "title": "Encontrando Su Voz",
+        "url": "articles/Encontrando-Su-Voz.html",
+        "date": "20-11-2021",
+        "thumbnail": "images/Marcus_Small.jpg",
+        "snippet": [
+          "El emperador de Roma Marco Aurelio podía hablar varios idiomas.",
+          "Fue un gran placer para mí saber que en sus propias palabras se",
+          "expresaba mejor en griego que en latín. Su diario fue escrito en griego ",
+          "como lo reflejan todas las mentes intelectuales de su tiempo. Pero, además",
+          "copió a sus profesores de filosofía llamados <i>Stoacism</i> en inglés,",
+          " que se originó en Grecia."
+        ]
+      },
+        
+      "1": {
+        "title": "One Free Miracle",
+        "url": "articles/One-Free-Miracle.html",
+        "date": "10-12-2023",
+        "thumbnail": "images/crab_nebular_jwst.jpg",
+        "snippet": [
+          "The contended 'one free miracle' is not necessary to explain our ",
+          "seemingly improbable circumstance. In a universe of abundant ",
+          "elementary molecules, we see the spontaneous process of chemical ",
+          "reactions manfiest the entrance and exit of existence. This is hardly ",
+          "improbable given it is the natural order of things."
+        ]
+      }
+
+    }
+  }
+
+}
