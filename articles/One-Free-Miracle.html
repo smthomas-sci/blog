@@ -10,10 +10,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
     <link href="../styles.css" type="text/css" rel="stylesheet">
 
-    <script type="application/javascript" src="../initialise.js"></script>
 
-
+    <!-- PRISM Syntax Highlighting -->
+    <script type="application/javascript" src="../scripts/prism/prism.js"></script>
+    <link type="text/css" rel="stylesheet" href="../scripts/prism/prism.css">
    
+
+    <!-- MathJax -->
     <script>
         MathJax = {
           tex: {
@@ -53,7 +56,7 @@
         </caption>
     </figure>    
 
-    <h5>10th Dec. 2023</h5>
+    <h5>12th June. 2020</h5>
 
     <p class="first_para">
     In the book <a class="link" href="https://www.amazon.com/Science-Delusion-dp-1529393221/dp/1529393221/ref=dp_ob_image_bk">The Science Delusion (2013)</a>
@@ -111,9 +114,9 @@
 
     <p>
     This is the argument known as <a class="link" href="https://en.wikipedia.org/wiki/Junkyard_tornado#:~:text=The%20junkyard%20tornado%2C%20also%20known,to%20the%20origin%20of%20life%2C">Hoyle's Fallacy</a> which equates the emergence of
-    life from non-living matter as being "comparable to the chance that a tornado
+    life from non-living matter as being <i>"comparable to the chance that a tornado
     sweeping through a junkyard might assemble a Boeing 747 from the materials
-    therein". It is precisely this argument which we will see to be false.
+    therein"</i>. It is precisely this argument which we will see to be false.
     </p>
 
     <p>
@@ -124,21 +127,564 @@
     a chance of dying, a death rate $D$. We will represent this as follows:
     </p>
 
+    <pre><code class="language-python">
+class Replicator:
+    """
+    A simple life form called a replicator.
+
+    Upon creation [ Replicator() ], the replicator has 
+    a chance of being born according to its birth_rate, otherwise
+    it is dead (self.alive = False)
+    """
+
+    def __init__(self, birth_rate: float, death_rate: float):
+        self.B = birth_rate
+        self.D = death_rate
+        self.alive = True if random.random() <= self.B else False
         
+    def step(self):
+        """
+        If replicator is alive, simulate chance of death.
+        """
+        self.alive = False if random.random() <= self.D and self.alive else self.alive
+
+    
+
+    </code></pre>
+
+   
+    <p>
+    We can now create a replicator where $B=0.8$ and $D=0.2$, and then check if it is alive.
+    </p>
+
+    <pre><code class="language-python">
+    replicator = Replicator(0.8, 0.2)
+    print(replicator.alive)
+    --
+    True
+    </code></pre>
+
+   
+    <p>
+    Life exists through time and so we can move to the next point in time using
+    the <code class="lanauge-python">step()</code> method. This then simulates 
+    the chance of death at that time step according to $D$.
+    </p>
+
+    <pre><code class="language-python">
+    replicator.step()
+    print(replicator.alive)
+    --
+    True
+    </code></pre>
+
+
+    <p>
+    We can simulate this over any number of steps to understand the replicators life-span.
+    </p>
+
+    <pre><code class="language-python">
+# Run over 10 time steps
+for t in range(10):
+    r.step()
+    print(t+1, r.alive, end="\t")
+--
+1 True	2 True	3 True	4 False	5 False	6 False	7 False	8 False	9 False	10 False
+
+    </code></pre>
+
+    <p>
+    This replicator dies after the third time step, but since it is random it
+    is helpful to consider a whole <b>population</b> of replicators. Let's create
+    $N=100$ replicators, and run 10 steps and count how many each are alive at
+    each time step.
+    </p>
+
+    <pre><code class="language-python">
+N = 100
+population = [ Replicator(birth_rate=0.8, death_rate=0.2) for n in range(N)]
+tally = []
+
+# Run over 10 time steps
+for t in range(10):
+    
+    alive_at_t = 0
+    # run step for each replicator
+    for r in population:
+    
+        r.step()
+        
+        if r.alive:
+            alive_at_t += 1
+    
+    # Save number of alive
+    tally.append(alive_at_t)
+
+# Show result
+print(tally)
+--
+[64, 53, 43, 36, 29, 19, 18, 17, 15, 12]
+    </code></pre>
+
+    <p>
+    We can see that most of them eventually die. However, we also have to
+    include the fact that the universe spontaneously creates more replicators
+    according to $B$. If we include this step, by adding to the population
+    progressively and running the simulation much longer something
+    interesting is revealed.
+    </p>
+
+    <pre><code class="language-python">
+N = 1
+population = [ Replicator(birth_rate=0.8, death_rate=0.2) for n in range(N)]
+tally = []
+
+# Run 500 time steps
+STEPS = 500
+for t in range(STEPS):
+    
+    alive_at_t = 0
+    
+    # Spontaneous generation of another replicator
+    population.append(Replicator(birth_rate=0.8, death_rate=0.2))
+    
+    # Run step for each replicator
+    for r in population:
+    
+        r.step()
+        
+        if r.alive:
+            alive_at_t += 1
+            
+        # It's dead, so remove it
+        else:
+            population.remove(r)
+    
+    # Save number of alive
+    tally.append(alive_at_t)
+    </code></pre>
+    
+    <div class="centered-img">
+      <img id="img1" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img1.js"></script>
+    </div>
+
+
+    <p>
+    We can see that the population grows and then shrinks, apparently
+    oscilating around an <b>equilibrium</b>. To understand what is happening, let's
+    considering the maths. If $B=D$, then the population would stay the same,
+    because for every birth there is an equal chance of death. However, if they
+    are <i>different</i>, then the number that can die depends on the number that are
+    alive, $N$.
+
+    $$
+    B=N \times D
+    $$
+
+    This enables us to estimate the equilibrium by taking the ratio between the
+    birth and death rates.
+
+    $$
+    N=BD
+    $$
+    
+    </p>
+
+    <pre><code class="language-python">
+    B = 0.8
+    D = 0.2
+    N = B/D
+    print(N)
+    --
+    4.0
+    </code></pre>
+
+    <p>
+    Knowing this, we can predict the equilibrium population for a variety of
+    different birth and death rates. The results show that the simulations
+    behave according to theory, oscilating around their respective equilibria.
+    e.g. $N = B / D = 0.9 / 0.02 = 45$.
+
+    <div class="centered-img">
+      <img id="img2" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img2.js"></script>
+    </div>
+
+    </p>
+
+    <p>
+    Valid values to experiment with are between $0$ and $1$ .If you explore
+    sufficiently you will discover something fundamental. It doesn't matter how
+    small a chance there is of being born, as long as it is higher than the
+    death rate. The only thing that matters is the <b>ratio</b>.
+
+    We can summarise two important discoveries as follows.
+    <ol>
+        <li>Looking at individuals is unhelpful, and so a universe must
+            spontaneously produce simple replicators to create a <i>population</i>.
+            Importantly, a replicator at this stage need not refer to <u>life</u>
+            as we understand it in its most complex form. It is simply an
+            abstraction that we will explore in coming sections.
+        </li>
+
+        <li>It is the ratio between the chance of being born and the chance of
+            dying that allows populations to grow, however slight the chances
+            are of that population getting started. The only thing required
+            under the most unlikely of circustances is <b>time</b>.
+        </li>
+    </ol>
+
+
+    With enough time (~14 billion years for our own universe) theory tells us
+    that life is an inevitability.
+
+
+    <h2>Escape Velocity</h2>
+
+    <p>
+    The equilibrium for a given pair of birth and death rates appears to limit
+    the size of the population. For $B=0.9$ and $D=0.01$, then the population
+    is limited to $90$. You might wonder then, how does a population grow past
+    that? $N$ scales inversely to $D$ and so if we decrease $D$ by another
+    order of magnitude, we get
+
+    $$
+    N = \dfrac{B}{D} = \dfrac{0.9}{0.001} = 900
+    $$
+
+
+    We can increase $N$ simply by making the chance of death exceedingly rare.
+    However, in doing so, the probability of having such a combination of $B$ and
+    $D$ also becomes exceedingly rare. Below is the full space of combinations.
+    The combinations with large population sizes occupy only a small portion of
+    the full space. Yet, even if such a lucky combination is found $N$ is still
+    bounded by the equilibrium. How does life get past this limit?
+
+    <div class="centered-img">
+      <img id="img3" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img3.js"></script>
+    </div>
+
+    </p>
+
+
+    <p>
+
+    A clue comes from prexisting prokaryotic life, namely Bacteria. Populations
+    of Bacteria increase because individuals <b>repliciate</b>(hence the use of
+    the term Replicator!). If we assume that a single Bacertia is "born",
+    within an environment is would have a death rate $D$ and a replication rate
+    $R$. By replicating, a copy of itself is added to the population. We can
+    update the Replicator class to include a replication rate and an ability to
+    replicate.
+    </p>
+
+    <pre><code class="language-python">
+class Replicator:
+    """
+    A simple life form called a replicator.
+    
+    Upon creation the replicator has 
+    a change of being born according to its birth_rate, otherwise
+    it is dead (self.alive = False)
+    """
+    
+    
+    def __init__(self, birth_rate:float, death_rate:float, replication_rate:float):
+        self.B = birth_rate
+        self.D = death_rate
+        self.R = replication_rate
+        self.alive = True if random.random() <= self.B else False
+        
+    def replicate(self):
+        """
+        Creates a copy of itself.
+        """
+        return Replicator(self.B, self.D, self.R)
+        
+    def step(self):
+        """
+        If replicator is alive, simulate chance of replication and then death
+        
+        Returns offspring
+        """
+        offspring = self.replicate() if random.random() <= self.R and self.alive else None
+        
+        self.alive = False if random.random() <= self.D and self.alive else self.alive
+        
+        return offspring
+
+    </code></pre>
+
+    <p>
+    Given that replicators can now replicate, the combination of dying and
+    replicating is going to effect the population. The number dying and is
+    offset, or reduced by the number replicating. We can represent this as:
+
+    $$
+    (D \times N ) - (R \times N) = N(D-R)
+    $$
+
+    We can then substitute this into our original model:
+
+    $$
+    N = \dfrac{B}{D-R}
+    $$
+
+    However, the spontaenous birth rate must be zero, because the replicator
+    cannot pop into existence without a parent. Therefore, the equation isn't
+    helpful to us because $N$ is always $0$. A way past this is to forget about a
+    birth rate of $0$ and change perspectives... 
+
+    </p>
+
+    <p>
+    Thinking back to what was said in the first section, we know that if $B=D$,
+    the population stays the same. When they are different then the population
+    changes, either increasing or decreasing. We can write the expected change
+    $\Delta$ as:
+
+    $$
+    \Delta = B - D
+    $$
+
+    We can include N to calculate the exact numbers for a given population.
+
+    $$
+    \Delta = B - (D \times N)
+    $$
+
+    But importantly, we now need to include the way replication increases the population.
+
+    $$
+    \Delta = (B+R \times N) - (D \times N) = B + (R-D) \times N
+    $$
+
+    This means that for any number of creatures, we can predict the change in
+    the number. To begin, let's choose $B=1$, $D=0.2$ and $R=0$, so that no
+    replication occurs. The change will be calculated for a range of $N=(0,10) $.
+
+    </p>
+
+    <pre><code class="language-python">
+N = [ float(n) for n in range(11) ]
+B = 1
+R = 0
+D = 0.2
+Delta = [B + (R - D)*n for n in N]
+    </code></pre>
+
+    <div class="centered-img">
+      <img id="img4" style="max-height: 400px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img4.js"></script>
+    </div>
+
+    
+    <p>
+    The orange dot shows us the equilibrium point, where if the population goes
+    below $5$, the expected change goes up, and if it goes above $5$, then the
+    expected change goes down. Now let's make $R=0.1$.
+
+    </p>
+
+    <div class="centered-img">
+      <img id="img5" style="max-height: 400px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img5.js"></script>
+    </div>
+
+    <p>
+    In this case, since the replication rate increased, our equilibrium changed
+    to $10$. If we run several simulations under these conditions we will see
+    that the equilibrium is reached.
+    </p>
+
+    <div class="centered-img">
+      <img id="img6" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img6.js"></script>
+    </div>
+
+
+    <p>
+    If the replication rate equals the death rate then we have linear growth, always increasing by the birth rate.
+    </p>
+
+    <div class="centered-img">
+      <img id="img7" style="max-height: 400px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img7.js"></script>
+    </div>
+    
+    <p>
+    We when simulate this for a number of different populations we get the following:
+    </p>
+
+
+    <div class="centered-img">
+      <img id="img8" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img8.js"></script>
+    </div>
+
+    <p> 
+    It becomes more interesting when the replication rate $R=0.2$ is higher than the death rate $D=0.1$.
+    </p>
+
+    <div class="centered-img">
+      <img id="img9" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img9.js"></script>
+    </div>
+
+    <p>
+    We can now finally see how replication can lead to exponential growth. We have
+    escaped the equilibrium point and the population is increasing!
+    However, we have only considered when $B=1$, which guarentees spontaneous
+    generation at each time step. What happens when populations depend only on
+    replication?
+    </p>
+
+    <div class="centered-img">
+      <img id="img10" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img10.js"></script>
+    </div>
+
+    <p>
+    Over the course of each of these simulations, if the population ever
+    reaches $0$ than they get stuck - this is called <b>extinction</b>. Life that
+    depends only on replication survives by walking a very thing line. How much they are
+    at risk of extinction depends on sensitive difference between $R$ and $𝐷$. In
+    this case, 42% of the 200 simulated populations went extinct.
+    </p>
+
+    <p>
+    We have so far depended on our "one free miracle" with a starting
+    population of at least 1 . This leaves us with an interesting predictament.
+    If complex organisms always need a parent, but they can't replicate unless
+    they already exist, how do they get started in the first place?
+    </p>
+
+    <h2>Emergence of Complex Life</h2>
+
+    <p>
+
+    </p>
 
 
 
+    <h2>Survival of the Fittest</h2>
 
+    <p>
+    We have previously seen the expected change equation as:
 
+    $$
+    \Delta = B + (R-D) \times N
+    $$
 
+    and if $𝑅 \gt D$ then we get an exponential growth curve.
 
+    </p>
 
+    <h2>Terminology</h2>
 
+    <p>
+    <i>Existence</i> - The dichotomy of either being alive or dead.
+    <p>
+
+    <p>
+    <i>Neo-Darwinism</i> - A theory of evolution by natural selection where by the unit of selection is a gene within a population.
+    </p>
+
+    <p>
+    <i>Replicator</i> - The most basic form of life whose structure allows it
+    to make (imperfect) copies of itself.
+    </p>
+
+    <p>
+    <i>Population</i> - A collection of genes upon which selection takes place.
+    </p>
+
+    <p>
+    <i>Equilibrium</i> - The fixed point around which population numbers
+    fluxuate.
+    </p>
+
+    <p>
+    <i>Birth:Death Ratio</i> - The ratio between the rates that molecular
+    structures come in and out of existence
+    </p>
+
+    <p>
+    <i>Mutation</i> - A spontaneous structural change within a molecular
+    structure or replicator which confers an existantial advantage or
+    disadvantage.
+    </p>
+
+    <p>
+    <i>Replication</i> - the process available to replicators that allows their
+    population to grow exponentially (if the replication rate is greater than
+    the death rate)
+    </p>
+
+    <p>
+    <i>Extinction</i> - refers to the permanent demise of a population of
+    replicators whose death rate exceeds their replication rate.
+    </p>
+
+    <p>
+    <i>Scarcity</i> - the resource limiations imposed on replicators by their
+    environment (includes other replicators), denying the possibility of
+    infinite growth and therefore leading to competition for those resources.
+    </p>
+
+    <p>
+    <i>Carrying Capacity</i> - the total number replicators that an environment
+    can sustain (theoretically, but impossible to calculate in practice)
+    </p>
+
+    <p>
+    <i>Selection</i> - The process where replicators with disadvantagous mutations are
+    removed from the population through death.
+    </p>
+
+    <p>
+    <i>Adapation</i> - The process where replicators accumulate mutations well-suited
+    (tentatively) to survival in the environment
+    </p>
+
+    <p>
+    <i>Fitness</i> - the competative capacity of a replicator to replicate.
+    </p>
+
+    <h2>Summary</h2>
+
+    <p>
+    The contended "one free miracle" is not necessary to explain our seemingly
+    improbable circumstance. In a universe of abundant elementary molecules, we
+    see the spontaneous process of chemical reactions manfiest the entrance and
+    exit of existence. This is hardly improbable given it is the natural order
+    of things. Given enough time, mutations serendipitously lead to molecular
+    units which can make copies of themselves. At this point we've reached
+    escape velovity, with exponential growth transforming the world, not by
+    degree but kind. Of course, the peristant problem of imperfect replication
+    allows for differential advantage to be found at every turn, with equal
+    risk of surival or extinction. In pockets of the environment where
+    resources are limited, competition ensues, where by replicators are
+    increasingly adapted to the task of replication. Despite this process
+    elegantly explaining the abundant and diverse presence of life on our
+    planet, it is critical to realise evolution operates only in hindsite.
+    There is no direction, no up towards which it aims. Despite this, we are
+    witness to a beautiful creative force on the world by which physics is the
+    only limiation to its ingenuity. More impressively, we understand it and
+    now see that evolution is just as formormidable as all other forces of
+    nature.
+    </p>
+
+    <!-- FOOTNOTES -->
+    <br>
+    <br>
     <br>
     <hr>
     <br>
 
-    <p class="footnote">[1] Page 2323</p>
+    <p class="footnote">[1] The Science Delusion, Rupert Sheldrake (2013) - Page 2323</p>
 
 
 </div>
