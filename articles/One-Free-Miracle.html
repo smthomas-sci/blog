@@ -556,19 +556,307 @@ Delta = [B + (R - D)*n for n in N]
 
     <p>
     We have so far depended on our "one free miracle" with a starting
-    population of at least 1 . This leaves us with an interesting predictament.
+    population of at least $1$. This leaves us with an interesting predictament.
     If complex organisms always need a parent, but they can't replicate unless
     they already exist, how do they get started in the first place?
     </p>
 
     <h2>Emergence of Complex Life</h2>
 
+    <style> 
+    .baseA { color: blue; }
+    .baseU { color: green; }
+    .baseG { color: red; }
+    .baseC { color: orange; }
+
+    </style>
+
     <p>
+    All life on Earth utilies a genetic code, based on either ribonucleic acid
+    (RNA), or deoxyribonucleic acid (DNA). It is theorised that early life
+    emerged from RNA, a code which has four symbols:
+    <span class="baseA">A</span>,
+    <span class="baseU">U</span>,
+    <span class="baseG">G</span>,
+    <span class="baseC">C</span>. The symbols
+    strung together form sequences such as:
+    
+    <ul>
+        <li><span class="baseG">G</span><span class="baseC">C</span><span class="baseG">GG</span><span class="baseA">AA</span></li>
+        <li><span class="baseA">AAAA</span><span class="baseU">UU</span></li>
+        <li><span class="baseA">A</span><span class="baseU">U</span><span class="baseC">C</span><span class="baseG">G</span><span class="baseA">A</span><span class="baseC">C</span></li>
+    </ul>
 
     </p>
 
+    <p>
+    What sequences we see in living organisms today are not random. However, we
+    can simplify the scenario to say that the simplest lifeform in our
+    simulated universe has a sequence of just <span class="baseA">A</span>.
+    Being incredibly simple, they spontenously emerge from the environment.
+    Once alive they can also replicate or die. However, when they undergo 
+    replication, there is a chance $M$, that their offspring will be a 
+    mutant with a genetic code of <span class="baseU">U</span>. This new 
+    <b>genetic variant</b> turns out not to be very good, and in fact has a
+    higher death rate than its parent.
+    </p>
+
+    <p>
+    We can update the <code>Replicator</code> class to include the RNA code, 
+    and see what happens when we run a simulation with the following parameters.
+
+    <ul>
+        <li><span class="baseA">A</span>: $B=1, D=0.5, R=0, M=0.01$ </li>
+        <li><span class="baseU">U</span>: $B=0, D=0.8, R=0.7, M=0$ </li>
+    </ul>
+    
+    </p>
+
+    <pre><code class="language-python">
+class Replicator:
+    """
+    A simple life form called a replicator.
+    
+    Upon creation the replicator has 
+    a change of being born according to its birth_rate, otherwise
+    it is dead (self.alive = False)
+    """
+    def __init__(self, birth_rate, death_rate, replication_rate, mutation_rate, genetic_code, alive=False):
+        self.B = birth_rate
+        self.D = death_rate
+        self.R = replication_rate
+        self.M = mutation_rate
+        self.genes = genetic_code
+        self.alive = alive
+        # Spontaneous birth
+        if not self.alive:
+            self.alive = True if random.random() <= self.B else False
+        
+    def replicate(self, rules):
+        """
+        Replicates according to what the rules dictate for its genes.
+        """
+        return Replicator(0, self.D, self.R, self.M, self.genes, True)
+    
+    def mutate(self, rules):
+        """
+        Mutates a replicator according to the rules
+        """
+        self.genes = rules.get_mutant(self) if np.random.random() <= self.M else self.genes
+        # Get parameters for genotype
+        params = rules.get_params(self.genes)
+        # Update replicator
+        self.B = params["B"]
+        self.D = params["D"]
+        self.R = params["R"]
+        self.M = params["M"]
+        
+    def step(self, rules):
+        """
+        If replicator is alive, simulate chance of replication and then death
+        
+        Returns offspring
+        """
+        # Environmental mutation
+        self.mutate(rules)
+        
+        # Replicate 
+        offspring = self.replicate(rules) if random.random() <= self.R and self.alive else None
+        
+        # Risk death!
+        self.alive = False if random.random() <= self.D and self.alive else self.alive
+        
+        return offspring
+    </code></pre>
 
 
+    <pre><code class="language-python">
+class Rules:
+    """
+    Contains the rules of the Universe
+    """
+    def __init__(self):
+        self.transitions = { "A" : "U", "U" : None, "G" : None, "C" : None }
+    
+        self.specifications = {
+            "A" : {"B" : 1, "D": 0.5, "R" : 0, "M": 0.01, "alive": True},
+            "U" : {"B" : 0, "D": 0.8, "R" : 0.7, "M": 0, "alive": True}
+        }
+        
+    def get_mutant(self, replicator):
+        return self.transitions[replicator.genes]
+        
+    def get_params(self, gene):
+        return self.specifications[gene]
+
+    </code></pre>
+
+
+    <pre><code class="language-python">
+# RUN SIMULATION
+N = 1
+B = 1
+D = 0.5
+R = 0
+M = 0.01
+
+rules = Rules()
+
+population = [ Replicator(birth_rate=B, death_rate=D,
+                          replication_rate=R, mutation_rate=M,
+                          genetic_code="A", alive=True) for n in range(N)]
+              
+tally = { "A": [], "U": [] }
+ 
+steps = 500
+for t in range(steps):
+    
+    alive_at_t = { "A" : 0, "U" : 0}
+    
+    # Spontaneous generation of another replicator
+    population.append(Replicator(birth_rate=B, death_rate=D,
+                          replication_rate=R, mutation_rate=M,
+                          genetic_code="A", alive=True))
+    
+     # Run step for each replicator
+    offspring = []
+    for r in population:
+
+        o = r.step(rules)
+
+        if o:
+            offspring.append(o)
+
+        if r.alive:
+            alive_at_t[r.genes] += 1
+
+        # It's dead, so remove it
+        else:
+            population.remove(r)
+
+    alive_at_t["A"] += len([o for o in offspring if o.genes == "A"])
+    alive_at_t["U"] += len([o for o in offspring if o.genes == "U"])
+
+    tally["A"].append(alive_at_t["A"])
+    tally["U"].append(alive_at_t["U"])
+
+    # Extend population with offspring
+    population.extend(offspring)
+
+    </code></pre>
+
+    <div class="centered-img">
+      <img id="img11" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img11.js"></script>
+    </div>
+
+    <p>
+    This shows us that a steady stream of simple replicators of type <span
+        class="baseA">A</span> will reach an equilibrium. Yet from that
+    population, every so often one will mutate to <span class="baseU">U</span>,
+    which despite it's chance of death, gains an ability to replicate. Of
+    course, it's chance of death is greater and so it inevitably tends towards
+    extinction. It just wasn't a good mutation. Let's look at a new equation to
+    incorporate the mutation.
+
+    $$
+    \Delta = B + (R (1-M)-D) \times N
+    $$
+
+    We modify the replication value, by saying that if 1% are going to mutate,
+    then 99% will replicate as usual, hence $R(1−M)$. Now if we multiply out the
+    equation an interesting term pops out.
+
+    $$
+    \Delta = B + RN - RMN - DN
+    $$
+
+    It is $RMN$, which is the total number of <span class="baseA">A</span> that mutate to
+    <span class="baseU">U</span>. We can use this term to keep track of the number of 
+    each type, by adding it to it's expected popuation equation as follows:
+
+    $$
+    \Delta A = B_{1} + (R_{1}(1-M_{1}) - D_{1}) \times N_{1}
+    $$
+
+    $$
+    \Delta U = B_{2} + (R_{2}(1-M_{2}) - D_{2}) \times N_{2} + R_{1}M_{1}N_{1}
+    $$
+
+    Let's now simulate a universe where many mutations are possible. The following rules will apply:
+
+    <br>
+    <br>
+
+    <b>Birth, Death, Replication and Mutation Rates</b>
+    <ul>
+        <li> <span class="baseA">A</span> $B=1, D=0.5, R=0,   M=0.01$   </li>
+        <li> <span class="baseU">U</span> $B=0, D=0.8, R=0.7, M=0.05$ </li>
+        <li> <span class="baseG">G</span> $B=0, D=0.8, R=0.5, M=0.1$  </li>
+        <li> <span class="baseC">C</span> $B=0, D=0.3, R=0.6, M=0$    </li>
+    </ul> 
+
+    <b>Allowable Mutations</b>
+    
+    $$
+    A \rightarrow U \rightarrow G \rightarrow C
+    $$
+
+    </p>
+
+    <pre><code class="language-python">
+class Rules:
+    """
+    Contains the rules of the Universe
+    """
+    def __init__(self):
+        self.transitions = { "A" : "U", "U" : "G", "G" : "C", "C" : None }
+
+        self.specifications = {
+            "A" : {"B" : 1, "D": 0.5, "R" : 0, "M": 0.01, "alive": True},
+            "U" : {"B" : 0, "D": 0.8, "R" : 0.7, "M": 0.05, "alive": True},
+            "G" : {"B" : 0, "D": 0.9, "R" : 0.5, "M": 0.1, "alive": True},
+            "C" : {"B" : 0, "D": 0.3, "R" : 0.6, "M": 0, "alive": True}
+        }
+
+    def get_mutant(self, replicator):
+        return self.transitions[replicator.genes]
+
+    def get_params(self, gene):
+        return self.specifications[gene]
+
+    </code></pre>
+
+    <p>
+    After running the simulation for 250 steps we experience a population
+    explosion. The <span class="baseC">C</span> begins growing exponentially
+    once emerging after only a couple of <span class="baseG">G</span> appear.
+    We can see that from the constant production of basic replicators (
+    <span class="baseA">A</span>), we can mutate towards something that has
+    exponential growth. In this way, we have shown that we can generate
+    complexity and in large numbers by building on top of the most basic
+    replicator. Even from a succession of bad mutations 
+    (<span class="baseU">U</span>, <span class="baseG">G</span>), we have seen that we
+    can eventually get exponential replicators which, with the environment
+    permitting, could later result in even more interesting mutations.
+
+
+    </p>
+
+    <div class="centered-img">
+      <img id="img12" style="max-width: 1000px; margin: auto;">
+      <script type="text/javascript" src="one-free-miracle/imgs/img12.js"></script>
+    </div>
+
+    <p>
+    This is an enormous discovery; it tells us that no miracle is necessary! We
+    only have to consider the simplest replicator in the environment,
+    <i>so simple that the environment naturally produces it</i>. If the environment allows
+    variation by way of mutation, and a particular mutation confers the ability
+    to replicate, then under such conditions life is an inevitabilty.
+    </p>
+
+    
     <h2>Survival of the Fittest</h2>
 
     <p>
