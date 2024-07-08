@@ -2,11 +2,11 @@
   "data": {
 
     "latest": [
-      {"type": "articles", "id" : "0"}
+      {"type": "articles", "id" : 1}
     ],
 
     "articles": {
-      "ids": [ 0, 1],
+      "ids": [ 1, 0],
       "0": {
         "title": "Encontrando Su Voz",
         "url": "articles/Encontrando-Su-Voz.html",
@@ -34,6 +34,18 @@
           "reactions manfiest the entrance and exit of existence. This is hardly ",
           "improbable given it is the natural order of things."
         ]
+      },
+
+      "2": {
+          "title": "The Human Spirit",
+          "url": "articles/The-Human-Spirit.html",
+          "date": "08-07-2024",
+          "thumbnail": "images/crab_nebular_jwst.jpg",
+          "snippet": [
+              "It is quite popular now to denigrate human beings. We are told that ",
+              "we are nothing special, a plague on the planet. But the truth is that ",
+              "we are something special"
+          ]
       }
 
     }
